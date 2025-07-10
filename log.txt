@@ -1,0 +1,50 @@
+// --- SERVER CONSOLE LOGS ---
+
+// --- Skenario 1: Tool Name Mismatch ---
+[2025-07-10T08:00:01.123Z] [INFO] MCP Server for 'MyCustomWeatherTool' listening on port 3000
+[2025-07-10T08:00:01.124Z] [INFO] Debug mode is ON
+[2025-07-10T08:00:05.456Z] [INFO] Incoming request: POST /mcp-tool-endpoint from ::1
+[2025-07-10T08:00:05.457Z] [DEBUG] Processing MCP request for tool: WrongToolName, action: getWeather
+[2025-07-10T08:00:05.458Z] [ERROR] Tool name mismatch. Expected 'MyCustomWeatherTool', received 'WrongToolName'.
+
+// --- Skenario 2: Missing API Key (Setelah menjalankan kembali server dengan .env yang sesuai) ---
+[2025-07-10T08:01:10.789Z] [INFO] MCP Server for 'MyCustomWeatherTool' listening on port 3000
+[2025-07-10T08:01:10.790Z] [INFO] Debug mode is ON
+[2025-07-10T08:01:15.111Z] [INFO] Incoming request: POST /mcp-tool-endpoint from ::1
+[2025-07-10T08:01:15.112Z] [DEBUG] Processing MCP request for tool: MyCustomWeatherTool, action: getWeather
+[2025-07-10T08:01:15.113Z] [DEBUG] Validating path: getWeather
+[2025-07-10T08:01:15.114Z] [INFO] Executing action: getWeather with input: {}
+[2025-07-10T08:01:15.115Z] [ERROR] Error during action execution: Weather API key is not configured.
+[2025-07-10T08:01:15.116Z] [ERROR] Failed to process MCP request for action getWeather: Weather API key is not configured.
+
+
+// --- CLIENT (POSTMAN/CURL/BROWSER DEVTOOLS) RESPONSE ---
+
+// --- Respon untuk Skenario 1: Tool Name Mismatch (Status: 400 Bad Request) ---
+{
+    "status": "error",
+    "error": {
+        "message": "Tool name mismatch. Expected 'MyCustomWeatherTool', received 'WrongToolName'.",
+        "code": "TOOL_NAME_MISMATCH"
+    },
+    "log": [
+        "[2025-07-10T08:00:05.457Z] [DEBUG] Processing MCP request for tool: WrongToolName, action: getWeather",
+        "[2025-07-10T08:00:05.458Z] [ERROR] Tool name mismatch. Expected 'MyCustomWeatherTool', received 'WrongToolName'."
+    ]
+}
+
+// --- Respon untuk Skenario 2: Missing API Key (Status: 500 Internal Server Error) ---
+{
+    "status": "error",
+    "error": {
+        "message": "Weather API key is not configured.",
+        "code": "MISSING_API_KEY"
+    },
+    "log": [
+        "[2025-07-10T08:01:15.112Z] [DEBUG] Processing MCP request for tool: MyCustomWeatherTool, action: getWeather",
+        "[2025-07-10T08:01:15.113Z] [DEBUG] Validating path: getWeather",
+        "[2025-07-10T08:01:15.114Z] [INFO] Executing action: getWeather with input: {}",
+        "[2025-07-10T08:01:15.115Z] [ERROR] Error during action execution: Weather API key is not configured.",
+        "[2025-07-10T08:01:15.116Z] [ERROR] Failed to process MCP request for action getWeather: Weather API key is not configured."
+    ]
+}
